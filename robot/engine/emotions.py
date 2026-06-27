@@ -53,4 +53,5 @@ EMOTIONS = {
     "happy": Emotion("happy", 35, "MAGENTA", happy_move),
     "angry": Emotion("angry", 20, "RED", angry_move),
     "gold": Emotion("gold", 45, "GOLD", gold_move),
+    "glitch":  Emotion("glitch", 35, "CYAN", None),
 }
