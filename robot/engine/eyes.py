@@ -38,6 +38,10 @@ class RobotEyes:
 
     def blink_update(self):
         """Tracks the timed state shifts for natural blinking."""
+        # Disable natural blinking for non-standard eye patterns
+        if self.emotion.name in ["loading", "sleepy"]:
+            self.blink = False
+            return
         now = time.time()
         if now > self.next_blink:
             self.blink = not self.blink
