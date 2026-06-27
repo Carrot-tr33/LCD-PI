@@ -17,6 +17,9 @@ def main():
     eyes = RobotEyes()
     controller = HardwareController(eyes.disp)
 
+    print("System running. Control Layout Configuration:")
+    print(" [KEY1] -> Happy  |  [KEY2] -> Angry  |  [KEY3] -> Gold  |  [JOYSTICK] -> Neutral")
+
     try:
         while True:
 
