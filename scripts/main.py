@@ -14,18 +14,23 @@ def main():
     controller = HardwareController(eyes.disp)
 
     eyes.boot_sequence()
-    
+
     print("System running. Control Layout Configuration:")
     print(" [KEY1] -> Happy  |  [KEY2] -> Angry  |  [KEY3] -> Gold  |  [JOYSTICK] -> Neutral")
 
     try:
         while True:
-            # 1. Ask the hardware controller if any physical key is being pressed
-            new_emotion = controller.get_target_emotion()
+            # 1. Check if the user is forcing a system glitch
+            if controller.is_joystick_pressed():
+                eyes.is_glitching = True
+            else:
+                eyes.is_glitching = False
 
-            # 2. If a key is pressed, AND it's different from current state, update it
-            if new_emotion and eyes.emotion.name != new_emotion:
-                apply_emotion(eyes, new_emotion)
+            # 2. Process other emotional state key presses if not glitching
+            if not eyes.is_glitching:
+                new_emotion = controller.get_target_emotion()
+                if new_emotion and eyes.emotion.name != new_emotion:
+                    apply_emotion(eyes, new_emotion)
 
             # 3. Standard screen refresh and interpolation step
             eyes.update()
