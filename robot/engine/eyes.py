@@ -18,6 +18,7 @@ class RobotEyes:
         # Initial baseline emotion state
         self.emotion = EMOTIONS["neutral"]
         self.eye_height = self.emotion.height
+        self.eye_vel = 0
 
         # Blinking mechanics
         self.blink = False 
@@ -33,6 +34,12 @@ class RobotEyes:
         if self.emotion.movement:
             self.emotion.movement(self)
 
+        # Spring physics calculation
+        k = 0.15  # Spring stiffness
+        damp = 0.80  # Friction/damping to stop perpetual bouncing
+        
+        acceleration = (self.emotion.height - self.eye_height) * k
+        self.eye_vel = (self.eye_vel + acceleration) * damp
         # Smoothly interpolate eyelid scale changes
         self.eye_height += (self.emotion.height - self.eye_height) * 0.25
 
