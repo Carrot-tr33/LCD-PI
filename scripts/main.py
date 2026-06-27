@@ -9,13 +9,13 @@ from robot.engine.controller import HardwareController
 def apply_emotion(eyes, name):
     eyes.set_emotion(name)
 
-    # Initialize our separate controller module, passing it the display driver
-    controller = HardwareController(eyes.disp)
+    controller.set_emotion(name)
 
     print("System running. Use KEY1, KEY2, KEY3, or Joystick Press to change emotions.")
 
 def main():
     eyes = RobotEyes()
+    controller = HardwareController(eyes.disp)
 
     try:
         while True:
