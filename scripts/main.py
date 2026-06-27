@@ -1,16 +1,13 @@
+# scripts/main.py
 import time
-from robot.engine import controller
 from robot.engine.eyes import RobotEyes
-from robot.engine import sound
 from robot.engine.controller import HardwareController
 
-
-
 def apply_emotion(eyes, name):
+    """Updates the internal visual emotion profile state cleanly."""
     eyes.set_emotion(name)
     print(f"--> Switched Eye State To: {name.upper()}")
 
-    print("System running. Use KEY1, KEY2, KEY3, or Joystick Press to change emotions.")
 
 def main():
     eyes = RobotEyes()
@@ -21,14 +18,14 @@ def main():
 
     try:
         while True:
-
-            # 1. Check for button inputs via our external module
+            # 1. Ask the hardware controller if any physical key is being pressed
             new_emotion = controller.get_target_emotion()
 
-            # 2. If a new emotion is detected, apply it to the eyes
+            # 2. If a key is pressed, AND it's different from current state, update it
             if new_emotion and eyes.emotion.name != new_emotion:
                 apply_emotion(eyes, new_emotion)
 
+            # 3. Standard screen refresh and interpolation step
             eyes.update()
             eyes.blink_update()
             eyes.draw()
@@ -36,7 +33,7 @@ def main():
             time.sleep(0.02)
 
     except KeyboardInterrupt:
-        eyes.disp.module_exit()
+        print("\nKeyboard Interrupt detected. Exiting cleanly...")
     finally:
         eyes.disp.module_exit()
 
