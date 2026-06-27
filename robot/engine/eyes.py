@@ -139,7 +139,7 @@ class RobotEyes:
             for _ in range(random.randint(1, 4)):
                 y_line = random.randint(0, 240)
                 d.line((0, y_line, 240, y_line), fill=random.choice(glitch_colors), width=random.randint(1, 3))
-                
+
         else:
             # Draw the eyes based on the current emotional state and blink status
             # If the robot is blinking, draw two horizontal lines to represent the closed eyes.
@@ -159,5 +159,51 @@ class RobotEyes:
                     self.x+55, self.y+self.eye_height),
                     10, self.emotion.color
                 )
+
+        self.disp.ShowImage(img.rotate(270))
+
+    def draw_menu(self, menu_options, selected_index):
+        """Renders a text-based UI selection menu over the image canvas."""
+        img = Image.new("RGB", (240, 240), "BLACK")
+        d = ImageDraw.Draw(img)
+
+        # Draw Title bar
+        d.rectangle((0, 0, 240, 35), fill="BLUE")
+        d.text((10, 10), "SYSTEM MAIN MENU", fill="WHITE")
+        d.line((0, 35, 240, 35), fill="WHITE", width=2)
+
+        # Draw Menu list options
+        start_y = 60
+        for index, option in enumerate(menu_options):
+            y_pos = start_y + (index * 40)
+            
+            if index == selected_index:
+                # Draw a highlight box around the active selected row
+                d.rectangle((10, y_pos - 5, 230, y_pos + 25), outline="CYAN", fill="#112233")
+                d.text((25, y_pos), f"> {option}", fill="CYAN")
+            else:
+                d.text((25, y_pos), f"  {option}", fill="LIGHTGRAY")
+
+        self.disp.ShowImage(img.rotate(270))
+
+    def draw_stats_page(self, cpu_pct, ram_pct):
+        """Renders a live system dashboard reading Pi parameters."""
+        img = Image.new("RGB", (240, 240), "BLACK")
+        d = ImageDraw.Draw(img)
+
+        d.rectangle((0, 0, 240, 35), fill="DARKGRAY")
+        d.text((10, 10), "RASPBERRY PI HARDWARE STATS", fill="BLACK")
+
+        # CPU Status Bar
+        d.text((20, 60), f"CPU Usage: {cpu_pct}%", fill="WHITE")
+        d.rectangle((20, 80, 220, 95), outline="WHITE", fill="BLACK")
+        d.rectangle((20, 80, 20 + int(cpu_pct * 2), 95), fill="GREEN")
+
+        # RAM Status Bar
+        d.text((20, 130), f"RAM Usage: {ram_pct}%", fill="WHITE")
+        d.rectangle((20, 150, 220, 165), outline="WHITE", fill="BLACK")
+        d.rectangle((20, 150, 20 + int(ram_pct * 2), 165), fill="MAGENTA")
+
+        d.text((20, 200), "[Press Joystick to Return]", fill="CYAN")
 
         self.disp.ShowImage(img.rotate(270))
