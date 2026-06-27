@@ -8,8 +8,7 @@ from robot.engine.controller import HardwareController
 
 def apply_emotion(eyes, name):
     eyes.set_emotion(name)
-
-    controller.set_emotion(name)
+    print(f"--> Switched Eye State To: {name.upper()}")
 
     print("System running. Use KEY1, KEY2, KEY3, or Joystick Press to change emotions.")
 
