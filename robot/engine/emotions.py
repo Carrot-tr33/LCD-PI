@@ -13,31 +13,49 @@ class Emotion:
 # --- NEW CUSTOM DRAWING BEHAVIORS ---
 
 def loading_draw(robot, d):
-    """Draws a spinning, segmented loading ring instead of traditional eyes."""
-    center_x, center_y = 120, 120
-    radius = 40
-    num_dots = 8
-    current_step = int(time.time() * 10) % num_dots  # Speed of spin
+    """Transforms both eye positions into coordinated spinning loading rings."""
+    # Define the centers for both the left and right eyes based on current gaze layout
+    left_center_x = robot.x - 35
+    right_center_x = robot.x + 35
+    center_y = robot.y
+    
+    radius = 18       # Size of the loading circles
+    num_dots = 6      # Number of segments in each ring
+    
+    # Calculate smooth rotation step over time
+    current_step = int(time.time() * 8) % num_dots  
 
     for i in range(num_dots):
+        # Calculate angle positions for the segments
         angle = (i * (2 * math.pi / num_dots))
-        dot_x = center_x + int(radius * math.cos(angle))
-        dot_y = center_y + int(radius * math.sin(angle))
+        offset_x = int(radius * math.cos(angle))
+        offset_y = int(radius * math.sin(angle))
         
-        # Calculate trailing brightness/fade effect based on distance from current step
+        # Calculate trailing brightness/fade effect
         diff = (i - current_step) % num_dots
         if diff == 0:
-            dot_color = robot.emotion.color  # Full bright
-            dot_radius = 8
+            dot_color = robot.emotion.color  # Lead bright accent color
+            dot_radius = 5
         elif diff == 1 or diff == 2:
-            dot_color = "GRAY"  # Medium dim
-            dot_radius = 6
+            dot_color = "GRAY"               # Mid-tone fading trail
+            dot_radius = 3.5
         else:
-            dot_color = "#222222"  # Barely visible trailing trail
-            dot_radius = 4
+            dot_color = "#222222"            # Dim unlit slots
+            dot_radius = 2
 
-        d.ellipse((dot_x - dot_radius, dot_y - dot_radius, dot_x + dot_radius, dot_y + dot_radius), fill=dot_color)
-
+        # Draw Left Eye Segment
+        d.ellipse(
+            (left_center_x + offset_x - dot_radius, center_y + offset_y - dot_radius, 
+             left_center_x + offset_x + dot_radius, center_y + offset_y + dot_radius), 
+            fill=dot_color
+        )
+        
+        # Draw Right Eye Segment (synchronized spin)
+        d.ellipse(
+            (right_center_x + offset_x - dot_radius, center_y + offset_y - dot_radius, 
+             right_center_x + offset_x + dot_radius, center_y + offset_y + dot_radius), 
+            fill=dot_color
+        )
 
 def thinking_draw(robot, d):
     """Draws asymmetric eyes: one narrow analyzing eye, and one wider eye that looks around."""
