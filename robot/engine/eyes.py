@@ -1,4 +1,3 @@
-# robot/engine/eyes.py
 import time
 import random
 from PIL import Image, ImageDraw
@@ -67,46 +66,7 @@ class RobotEyes:
         img = Image.new("RGB", (240, 240), "BLACK")
         d = ImageDraw.Draw(img)
 
-        # --- NATIVE GLITCH EMOTION DRAWING ---
-        if self.emotion.name == "glitch":
-            glitch_height_l = self.eye_height + random.randint(-15, 15)
-            glitch_height_r = self.eye_height + random.randint(-15, 15)
-            glitch_colors = ["CYAN", "RED", "WHITE", "PURPLE", "GREEN"]
-            current_color = random.choice(glitch_colors)
-
-            l_offset_x, l_offset_y = random.randint(-10, 10), random.randint(-6, 6)
-            r_offset_x, r_offset_y = random.randint(-10, 10), random.randint(-6, 6)
-
-            # Left Eye Scramble
-            d.rounded_rectangle(
-                (self.x - 55 + l_offset_x, self.y - glitch_height_l + l_offset_y,
-                 self.x - 15 + l_offset_x, self.y + glitch_height_l + l_offset_y),
-                random.randint(2, 10), current_color
-            )
-            # Right Eye Scramble
-            d.rounded_rectangle(
-                (self.x + 15 + r_offset_x, self.y - glitch_height_r + r_offset_y,
-                 self.x + 55 + r_offset_x, self.y + glitch_height_r + r_offset_y),
-                random.randint(2, 10), current_color
-            )
-            # Video Artifact Scanlines
-            for _ in range(random.randint(1, 3)):
-                y_ln = random.randint(0, 240)
-                d.line((0, y_ln, 240, y_ln), fill=random.choice(glitch_colors), width=random.randint(1, 2))
-
-        # --- REGULAR CLEAN EMOTION DRAWING ---
-        else:
-            if self.blink:
-                d.line((self.x - 45, self.y, self.x - 15, self.y), fill=self.emotion.color, width=6)
-                d.line((self.x + 15, self.y, self.x + 45, self.y), fill=self.emotion.color, width=6)
-            else:
-                d.rounded_rectangle(
-                    (self.x - 55, self.y - self.eye_height, self.x - 15, self.y + self.eye_height),
-                    10, self.emotion.color
-                )
-                d.rounded_rectangle(
-                    (self.x + 15, self.y - self.eye_height, self.x + 55, self.y + self.eye_height),
-                    10, self.emotion.color
-                )
+        # Delegate drawing to whatever specific behavior the current emotion holds
+        self.emotion.draw_func(self, d)
 
         self.disp.ShowImage(img.rotate(270))
