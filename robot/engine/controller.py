@@ -1,4 +1,4 @@
-import ST7789
+from robot.core import ST7789
 
 class HardwareController:
     def __init__(self, display_instance):
